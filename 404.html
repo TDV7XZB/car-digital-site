@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 | Car Digital</title>
+    <meta name="robots" content="noindex" />
+    <link rel="stylesheet" href="/all-styles.css" />
+    <script src="/cookie-consent.js" defer></script>
+</head>
+  <body class="cd-404-page">
+    <div id="cd-preloader"><div class="cd-spinner"></div></div>
+    <main class="card">
+      <h1>404</h1>
+      <p>The page you requested does not exist or may have moved.</p>
+      <p>Requested URL:</p>
+      <div id="missing-path" class="missing">Loading...</div>
+
+      <div class="actions">
+        <a class="btn" href="/">Go To Homepage</a>
+        <a class="btn btn-secondary" href="/contact/">Contact Us</a>
+      </div>
+    </main>
+
+    <script src="/404/route.js"></script>
+    <script>window.addEventListener('load',function(){document.getElementById('cd-preloader').classList.add('cd-loaded')});</script>
+  </body>
+</html>
