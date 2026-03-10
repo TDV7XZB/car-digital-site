@@ -4,24 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     
-<script id="cd-base-path">
-(function () {
-  var path = window.location.pathname || "/";
-  var host = window.location.hostname || "";
-  var baseHref = "/";
-
-  if (host.indexOf("github.io") !== -1) {
-    var segments = path.split("/").filter(Boolean);
-    if (segments.length) {
-      baseHref = "/" + segments[0] + "/";
-    }
-  }
-
-  var base = document.createElement("base");
-  base.href = baseHref;
-  document.head.appendChild(base);
-})();
-</script>
 <title>404 | Car Digital</title>
     <meta name="robots" content="noindex" />
     <link rel="stylesheet" href="all-styles.css" />
