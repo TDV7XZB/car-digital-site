@@ -116,9 +116,9 @@
       '  <button type="button" class="cd-cookie-btn cd-cookie-deny" data-consent="deny">Deny</button>' +
       '</div>' +
       '<p class="cd-cookie-links">' +
-      '  <a href="/cookie-policy/">Cookie Policy</a>' +
+      '  <a href="cookie-policy/">Cookie Policy</a>' +
       '  <span aria-hidden="true"> | </span>' +
-      '  <a href="/privacy-policy/">Privacy Policy</a>' +
+      '  <a href="privacy-policy/">Privacy Policy</a>' +
       '</p>';
 
     banner.addEventListener("click", function (event) {

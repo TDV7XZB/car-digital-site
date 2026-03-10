@@ -1,6 +1,36 @@
 (function () {
   var pathname = window.location.pathname || "/";
-  var normalizedPath = pathname.length > 1 ? pathname.replace(/\/$/, "") : pathname;
+  var search = window.location.search || "";
+  var hash = window.location.hash || "";
+
+  function detectBasePath() {
+    var host = window.location.hostname || "";
+    var path = window.location.pathname || "/";
+
+    if (host.indexOf("github.io") === -1) {
+      return "";
+    }
+
+    var segments = path.split("/").filter(Boolean);
+    return segments.length ? "/" + segments[0] : "";
+  }
+
+  var basePath = detectBasePath();
+
+  function toRoutePath(path) {
+    if (basePath && path.indexOf(basePath + "/") === 0) {
+      return path.slice(basePath.length) || "/";
+    }
+
+    if (basePath && path === basePath) {
+      return "/";
+    }
+
+    return path;
+  }
+
+  var routePath = toRoutePath(pathname);
+  var normalizedPath = routePath.length > 1 ? routePath.replace(/\/$/, "") : routePath;
 
   // Allow normal static asset and WordPress export paths.
   if (/\.[a-z0-9]+$/i.test(normalizedPath) || normalizedPath.indexOf("/wp-") === 0) {
@@ -24,10 +54,10 @@
     return;
   }
 
-  var attemptedUrl = pathname + window.location.search + window.location.hash;
-  var target = "/404/?from=" + encodeURIComponent(attemptedUrl);
+  var attemptedUrl = routePath + search + hash;
+  var target = (basePath || "") + "/404/?from=" + encodeURIComponent(attemptedUrl);
 
-  if (window.location.pathname !== "/404/" && window.location.pathname !== "/404/index.html") {
+  if (normalizedPath !== "/404" && normalizedPath !== "/404.html") {
     window.location.replace(target);
   }
 })();
