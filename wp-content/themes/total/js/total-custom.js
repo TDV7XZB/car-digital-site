@@ -8,6 +8,11 @@
 
 jQuery(function ($) {
 
+    var totalLocalize = window.total_localize || {
+        template_path: '',
+        is_rtl: 'false'
+    };
+
     /* Sticky Header */
     var hHeight = 0;
     var adminbarHeight = 0;
@@ -15,7 +20,7 @@ jQuery(function ($) {
         adminbarHeight = 32;
     }
     var $stickyHeader = $('.ht-header');
-    if ($('.ht-sticky-header').length > 0 && $stickyHeader.length > 0) {
+    if ($('.ht-sticky-header').length > 0 && $stickyHeader.length > 0 && $.fn.headroom) {
         hHeight = $stickyHeader.outerHeight();
         $pageWrapper = $('#ht-content');
         var hOffset = $stickyHeader.offset().top;
@@ -37,9 +42,9 @@ jQuery(function ($) {
         });
     }
 
-    if ($('#ht-bx-slider .ht-slide').length > 0) {
+    if ($.fn.owlCarousel && $('#ht-bx-slider .ht-slide').length > 0) {
         $('#ht-bx-slider').owlCarousel({
-            rtl: JSON.parse(total_localize.is_rtl),
+            rtl: JSON.parse(totalLocalize.is_rtl),
             autoplay: true,
             items: 1,
             loop: true,
@@ -50,51 +55,61 @@ jQuery(function ($) {
         });
     }
 
-    $('.ht-testimonial-slider').owlCarousel({
-        rtl: JSON.parse(total_localize.is_rtl),
-        autoplay: true,
-        items: 1,
-        loop: true,
-        nav: true,
-        dots: false,
-        autoplayTimeout: 7000,
-        navText: ['<i class="fas fa-chevron-left" aria-hidden="true"></i>', '<i class="fas fa-chevron-right" aria-hidden="true"></i>']
-    });
+    if ($.fn.owlCarousel) {
+        $('.ht-testimonial-slider').owlCarousel({
+            rtl: JSON.parse(totalLocalize.is_rtl),
+            autoplay: true,
+            items: 1,
+            loop: true,
+            nav: true,
+            dots: false,
+            autoplayTimeout: 7000,
+            navText: ['<i class="fas fa-chevron-left" aria-hidden="true"></i>', '<i class="fas fa-chevron-right" aria-hidden="true"></i>']
+        });
 
-    $(".ht-logo-slider").owlCarousel({
-        rtl: JSON.parse(total_localize.is_rtl),
-        autoplay: true,
-        items: 5,
-        loop: true,
-        nav: false,
-        dots: false,
-        autoplayTimeout: 7000,
-        responsive: {
-            0: {
-                items: 2,
-            },
-            768: {
-                items: 3,
-            },
-            979: {
-                items: 4,
-            },
-            1200: {
-                items: 5,
+        $(".ht-logo-slider").owlCarousel({
+            rtl: JSON.parse(totalLocalize.is_rtl),
+            autoplay: true,
+            items: 5,
+            loop: true,
+            nav: false,
+            dots: false,
+            autoplayTimeout: 7000,
+            responsive: {
+                0: {
+                    items: 2,
+                },
+                768: {
+                    items: 3,
+                },
+                979: {
+                    items: 4,
+                },
+                1200: {
+                    items: 5,
+                }
             }
-        }
-    });
+        });
+    }
 
-    $('.ht-portfolio-image').nivoLightbox();
+    if ($.fn.nivoLightbox) {
+        $('.ht-portfolio-image').nivoLightbox();
+    }
 
-    var sf = $('.ht-menu > ul').superfish({
-        delay: 500, // one second delay on mouseout
-        animation: {opacity: 'show', height: 'show'}, // fade-in and slide-down animation
-        speed: 'fast', // faster animation speed
-        autoArrows: false
-    });
+    var sf = null;
+    if ($.fn.superfish) {
+        sf = $('.ht-menu > ul').superfish({
+            delay: 500,
+            animation: {opacity: 'show', height: 'show'},
+            speed: 'fast',
+            autoArrows: false
+        });
+    }
 
     $(window).resize(function () {
+        if (!sf) {
+            return;
+        }
         if ($(window).width() < 1000) {
             sf.superfish('destroy');
             $('.ht-dropdown').removeClass('ht-opened');
@@ -123,7 +138,9 @@ jQuery(function ($) {
 
     $('.toggle-bar').click(function () {
         $(this).next('.ht-menu').slideToggle();
-        totalKeyboardLoop($('.ht-main-navigation'));
+        if (typeof totalKeyboardLoop === 'function') {
+            totalKeyboardLoop($('.ht-main-navigation'));
+        }
         return false;
     });
 
@@ -150,23 +167,25 @@ jQuery(function ($) {
         });
     });
 
-    $('.ht-team-counter-wrap').waypoint(function () {
-        setTimeout(function () {
-            $('.odometer1').html($('.odometer1').data('count'));
-        }, 500);
-        setTimeout(function () {
-            $('.odometer2').html($('.odometer2').data('count'));
-        }, 1000);
-        setTimeout(function () {
-            $('.odometer3').html($('.odometer3').data('count'));
-        }, 1500);
-        setTimeout(function () {
-            $('.odometer4').html($('.odometer4').data('count'));
-        }, 2000);
-    }, {
-        offset: 800,
-        triggerOnce: true
-    });
+    if ($.fn.waypoint) {
+        $('.ht-team-counter-wrap').waypoint(function () {
+            setTimeout(function () {
+                $('.odometer1').html($('.odometer1').data('count'));
+            }, 500);
+            setTimeout(function () {
+                $('.odometer2').html($('.odometer2').data('count'));
+            }, 1000);
+            setTimeout(function () {
+                $('.odometer3').html($('.odometer3').data('count'));
+            }, 1500);
+            setTimeout(function () {
+                $('.odometer4').html($('.odometer4').data('count'));
+            }, 2000);
+        }, {
+            offset: 800,
+            triggerOnce: true
+        });
+    }
 
     if ($('.ht-sticky-header').length > 0) {
         var onpageOffset = 74;
@@ -174,13 +193,15 @@ jQuery(function ($) {
         onpageOffset = 0
     }
 
-    $('.ht-sticky-header .ht-menu').onePageNav({
-        currentClass: 'current',
-        changeHash: false,
-        scrollSpeed: 750,
-        scrollThreshold: 0.1,
-        scrollOffset: onpageOffset
-    });
+    if ($.fn.onePageNav) {
+        $('.ht-sticky-header .ht-menu').onePageNav({
+            currentClass: 'current',
+            changeHash: false,
+            scrollSpeed: 750,
+            scrollThreshold: 0.1,
+            scrollOffset: onpageOffset
+        });
+    }
 
     // *only* if we have anchor on the url
     var anchorId = window.location.hash;
